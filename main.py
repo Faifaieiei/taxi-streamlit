@@ -1,7 +1,7 @@
 import streamlit as st
-import folium 
-from PIL import Image
-from streamlit_folium import folium_static
+#import folium 
+#from PIL import Image
+#from streamlit_folium import folium_static
  
 st.set_page_config(
     page_title="Thai taxi clustering",
