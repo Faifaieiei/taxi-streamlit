@@ -59,8 +59,6 @@ states = geopandas.GeoDataFrame.from_features(data, crs="EPSG:4326")
 # st.write(states.head())
 
 taxi_data = pd.read_csv('D:\\Senior Project\\OD_2022\\Taxi2022_bkk.csv')
-# st.write("taxi_data :", taxi_data.shape)
-# st.write(taxi_data.head())
 
 # *******************************************************************************************************************
 
