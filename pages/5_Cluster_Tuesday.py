@@ -1,5 +1,6 @@
 import folium.features
 import streamlit as st
+from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import silhouette_score
@@ -96,9 +97,17 @@ def geodf_to_str(_geodf):
 
 top_10_districts = ["เขตจตุจักร","เขตราชเทวี","เขตบางกอกน้อย","เขตปทุมวัน","เขตดุสิต","เขตพระนคร","เขตหลักสี่","เขตดอนเมือง","เขตบางนา","เขตยานนาวา"]
 
+# main.py dir
+path = Path(__file__).parents[1]
+# print(path)
+
+# NOTE rename filename.gz to yours
+gz_path = f"{path}\\Monday2_bkk.gz"
+# print(gz_path)
+
 # โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
 # taxi_data = pd.read_csv('D:\Senior Project\OD_2022\Tuesday_bkk.csv')
-with gzip.open('../Tuesday2_bkk.gz', 'rb') as f:
+with gzip.open(gz_path, 'rb') as f:
     # อ่านข้อมูลเข้าสู่ DataFrame ของ pandas
     taxi_data = pd.read_csv(f)
 
