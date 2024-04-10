@@ -9,19 +9,19 @@ st.set_page_config(
     page_icon="🚕",
 )
 
-# Directory path
-directory = '.'
+# # Directory path
+# directory = '.'
 
-# List all files and folders in the directory
-contents = os.listdir(directory)
+# # List all files and folders in the directory
+# contents = os.listdir(directory)
 
-# Print file and folder names
-for item in contents:
-    item_path = os.path.join(directory, item)
-    if os.path.isdir(item_path):
-        print(f"Folder: {item}")
-    elif item.endswith(".gz"):
-        print(f"File: {item_path}")
+# # Print file and folder names
+# for item in contents:
+#     item_path = os.path.join(directory, item)
+#     if os.path.isdir(item_path):
+#         print(f"Folder: {item}")
+#     elif item.endswith(".gz"):
+#         print(f"File: {item_path}")
 
 st.write("# TAXI CLUSTERING USING DBSCAN IN THAILAND, 2022 🔍🚕") 
 
