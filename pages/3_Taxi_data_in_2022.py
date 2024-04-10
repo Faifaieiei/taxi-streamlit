@@ -1,8 +1,6 @@
 import folium.features
 import streamlit as st
 from shapely.geometry import Point
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
 from streamlit_folium import st_folium
 from geopandas.tools import sjoin
 import geopandas as gpd
