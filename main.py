@@ -21,7 +21,7 @@ for item in contents:
     if os.path.isdir(item_path):
         print(f"Folder: {item}")
     elif item.endswith(".gz"):
-        print(f"File: {item}")
+        print(f"File: {item_path}")
 
 st.write("# TAXI CLUSTERING USING DBSCAN IN THAILAND, 2022 🔍🚕") 
 
