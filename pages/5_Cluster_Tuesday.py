@@ -98,7 +98,7 @@ top_10_districts = ["เขตจตุจักร","เขตราชเท�
 
 # โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
 # taxi_data = pd.read_csv('D:\Senior Project\OD_2022\Tuesday_bkk.csv')
-with gzip.open('D:\Senior Project\OD_2022\Tuesday2_bkk.gz', 'rb') as f:
+with gzip.open('../Tuesday2_bkk.gz', 'rb') as f:
     # อ่านข้อมูลเข้าสู่ DataFrame ของ pandas
     taxi_data = pd.read_csv(f)
 
