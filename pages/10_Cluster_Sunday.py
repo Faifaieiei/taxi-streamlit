@@ -102,7 +102,7 @@ path = Path(__file__).parents[1]
 # print(path)
 
 # NOTE rename filename.gz to yours
-gz_path = f"{path}\\Sunday2_bkk.gz"
+gz_path = f"{path}/Sunday2_bkk.gz"
 # print(gz_path)
 
 # โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
