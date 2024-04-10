@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 #import folium 
 #from PIL import Image
 #from streamlit_folium import folium_static
@@ -7,6 +8,20 @@ st.set_page_config(
     page_title="Thai taxi clustering",
     page_icon="🚕",
 )
+
+# Directory path
+directory = '.'
+
+# List all files and folders in the directory
+contents = os.listdir(directory)
+
+# Print file and folder names
+for item in contents:
+    item_path = os.path.join(directory, item)
+    if os.path.isdir(item_path):
+        print(f"Folder: {item}")
+    elif item.endswith(".gz"):
+        print(f"File: {item}")
 
 st.write("# TAXI CLUSTERING USING DBSCAN IN THAILAND, 2022 🔍🚕") 
 
