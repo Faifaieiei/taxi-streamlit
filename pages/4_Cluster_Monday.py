@@ -22,6 +22,7 @@ import requests
 import math
 import folium
 import json
+import os
 import utm
 
 ###Set the streamlit page layout
@@ -97,11 +98,25 @@ def geodf_to_str(_geodf):
 
 top_10_districts = ["เขตจตุจักร","เขตราชเทวี","เขตบางกอกน้อย","เขตปทุมวัน","เขตดุสิต","เขตพระนคร","เขตหลักสี่","เขตดอนเมือง","เขตบางนา","เขตยานนาวา"]
 
+# Directory path
+directory = '..'
+
+# List all files and folders in the directory
+contents = os.listdir(directory)
+
+# Print file and folder names
+for item in contents:
+    item_path = os.path.join(directory, item)
+    if os.path.isdir(item_path):
+        print(f"Folder: {item}")
+    elif item.endswith(".gz"):
+        print(f"File: {item_path}")
+        
 path = Path(__file__).parents[1]
 # print(path)
 
 # NOTE rename filename.gz to yours
-gz_path = f"{path}\\Monday2_bkk.gz"
+gz_path = f"{path}/Monday2_bkk.gz"
 # print(gz_path)
 
 # โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
