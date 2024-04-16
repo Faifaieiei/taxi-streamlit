@@ -364,6 +364,7 @@ with tab2:
 
                 # สร้าง folium Map
                 colors = ['#' + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in range(n_clusters_)] # range = n_clusters_
+                st.write(colors)
 
                 map_center = [filtered_mon_in_selected_district['startlat'].mean(), filtered_mon_in_selected_district['startlon'].mean()]
                 my_map = folium.Map(location=map_center, zoom_start=12)
