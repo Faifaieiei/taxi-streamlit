@@ -364,8 +364,7 @@ with tab2:
 
                 # สร้าง folium Map
                 colors = ['#' + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in range(n_clusters_)] # range = n_clusters_
-                st.write(colors)
-
+     
                 map_center = [filtered_mon_in_selected_district['startlat'].mean(), filtered_mon_in_selected_district['startlon'].mean()]
                 my_map = folium.Map(location=map_center, zoom_start=12)
 
@@ -381,6 +380,10 @@ with tab2:
                 choropleth.geojson.add_child(
                     folium.features.GeoJsonTooltip(['dname_e'], labels=False)  # แก้เป็นชื่อคอลัมน์ที่ถูกต้อง
                 )
+
+                filtered_mon_in_selected_district['cluster_color'] = filtered_mon_in_selected_district['cluster'].apply(lambda x: colors[int(x)])
+                filtered_mon_in_selected_district_sorted = filtered_mon_in_selected_district.sort_values(by='cluster')
+                unique_colors = filtered_mon_in_selected_district[['cluster', 'cluster_color']].drop_duplicates()
                 
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
@@ -398,10 +401,12 @@ with tab2:
                 st_map = st_folium(my_map, width=700, height=450)
 
             with col7:
-                dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts()       
-                fig = px.bar(x=dblabels_count.index, y=dblabels_count.values)
+                dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()       
+                dblabels_count.columns = ['cluster', 'count']
+                merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
+                fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color=colors)
+                fig.update_traces(marker_color=merged_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
