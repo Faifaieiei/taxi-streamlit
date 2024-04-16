@@ -380,7 +380,7 @@ with tab2:
                 choropleth.geojson.add_child(
                     folium.features.GeoJsonTooltip(['dname_e'], labels=False)  # แก้เป็นชื่อคอลัมน์ที่ถูกต้อง
                 )
-
+                
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
                     cluster = row['cluster']  # ใช้ค่า cluster จาก DataFrame
@@ -400,7 +400,7 @@ with tab2:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts()       
                 fig = px.bar(x=dblabels_count.index, y=dblabels_count.values)
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color='deepskyblue')
+                fig.update_traces(marker_color=colors)
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
