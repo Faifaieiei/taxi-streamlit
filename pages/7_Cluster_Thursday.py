@@ -399,7 +399,7 @@ with tab2:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts()       
                 fig = px.bar(x=dblabels_count.index, y=dblabels_count.values)
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color='deepskyblue')
+                fig.update_traces(marker_color=colors)
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
