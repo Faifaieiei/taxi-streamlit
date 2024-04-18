@@ -87,7 +87,7 @@ path = Path(__file__).parents[1]
 # print(path)
 
 # NOTE rename filename.gz to yours
-gz_path = f"{path}\\Monday2_bkk.gz"
+gz_path = f"{path}/Monday2_bkk.gz"
 
 # โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
 with gzip.open(gz_path, 'rb') as f:
