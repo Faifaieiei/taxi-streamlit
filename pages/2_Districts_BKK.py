@@ -62,19 +62,8 @@ with col[1]:
     # แสดง Pie Chart ใน Streamlit
     st.plotly_chart(fig, width=100, height=100)
 
-    # # สร้าง Pie Chart
-    # fig, ax = plt.subplots()
-    # labels = ['Male', 'Female']
-    # sizes = [male_count, female_count]
-    # ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    # ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-    # st.pyplot(fig)
-
     st.metric(label="Total population in district", value="{:,}".format(total_count))
     st.metric(label="Total population in Bangkok", value="5,494,932")
-
-
 
 # *******************************************************************************************************************
 
@@ -150,63 +139,3 @@ with col[0]:
                     )
     
     st.markdown("source : https://github.com/pcrete/gsvloader-demo/raw/master/geojson/Bangkok-districts.geojson")
-
-    # # เลือกเขต
-    # st.markdown("#### Population")
-    # selected_district = st.selectbox('Select district', states['dname'])
-
-    # # นับจำนวนเพศแต่ละเขต
-    # selected_district_data = states[states['dname'] == selected_district]
-    # male_count = selected_district_data['no_male'].iloc[0]
-    # female_count = selected_district_data['no_female'].iloc[0]
-
-    # # สร้าง Pie Chart
-    # fig, ax = plt.subplots()
-    # labels = ['Male', 'Female']
-    # sizes = [male_count, female_count]
-    # ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    # ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-    # st.pyplot(fig)
-
-# map = folium.Map(location=[13.7563, 100.5018], tiles="OpenStreetMap", zoom_start=10)
-# choropleth = folium.Choropleth(
-#     geo_data=data,
-#     data=states,
-#     columns=["dname_e","AREA"],
-#     key_on='feature.properties.dname_e',
-#     line_opacity=0.8,
-#     highlight=True
-# )
-# choropleth.geojson.add_to(map)
-# choropleth.geojson.add_child(
-#     folium.features.GeoJsonTooltip(['name'], labels=False)
-# )
-
-# st_map = st_folium(map, width=700, height=450)
-
-# # สร้างแผนที่ Folium
-# m = folium.Map(location=[13.7563, 100.5018], tiles="OpenStreetMap", zoom_start=12)
-
-# tooltip = folium.GeoJsonTooltip(
-#     fields=["dname"],
-#     aliases=["District"],
-#     localize=True,
-#     sticky=False,
-#     labels=True,
-#     style="""
-#         background-color: #F0EFEF;
-#         border: 2px solid black;
-#         border-radius: 3px;
-#         box-shadow: 3px;
-#     """,
-#     max_width=800,
-# )
-
-# g = folium.GeoJson(
-#     states,
-#     style_kwds={'fillColor': 'blue'},
-#     tooltip=tooltip
-# ).add_to(m)
-
-# m
