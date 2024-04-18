@@ -84,7 +84,6 @@ top_10_districts = ["เขตจตุจักร","เขตราชเท�
 
 # main.py dir
 path = Path(__file__).parents[1]
-# print(path)
 
 # NOTE rename filename.gz to yours
 gz_path = f"{path}/Monday2_bkk.gz"
@@ -291,17 +290,12 @@ with tab2:
                 
                 filtered_mon_in_selected_district['cluster_color'] = filtered_mon_in_selected_district['cluster'].apply(lambda x: colors[int(x)])
                 filtered_mon_in_selected_district_sorted = filtered_mon_in_selected_district.sort_values(by='cluster')
-                # st.write(filtered_mon_in_selected_district_sorted.head())
-                # unique_colors = filtered_mon_in_selected_district['cluster_color'].drop_duplicates()
                 unique_colors = filtered_mon_in_selected_district[['cluster', 'cluster_color']].drop_duplicates()
-                # st.write(unique_colors)
-                # print(list(set(filtered_mon_in_selected_district['cluster'])))
-
+                
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
                     cluster = row['cluster']  # ใช้ค่า cluster จาก DataFrame
                     popup_text = f"Cluster: {cluster}"
-                    # cluster_color = row['cluster_color']
                     folium.CircleMarker(location=point, radius=3, color=colors[int(cluster)], fill=True, fill_color=colors[int(cluster)], popup=popup_text).add_to(my_map)
                     
                 # หาตำแหน่งขอบเขตของเขตที่ผู้ใช้เลือก
@@ -311,20 +305,14 @@ with tab2:
                 my_map.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
                 st_map = st_folium(my_map, width=700, height=450)
-                # st.write(filtered_mon_in_selected_district.head())
+                
             with col7:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()
                 dblabels_count.columns = ['cluster', 'count']
-                # st.write(dblabels_count)
-                # st.write(dblabels_count.index)
-                # st.write(dblabels_count.values)
 
                 merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
-                # st.write(merged_df)
 
                 # สร้างกราฟแท่ง
-                # fig = go.Figure(go.Bar(x=dblabels_count.index, y=dblabels_count.values, marker=dict(color=colors)))
-                # fig = px.bar(x=dblabels_count.index, y=dblabels_count.values)
                 fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
                 fig.update_traces(marker_color=merged_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
