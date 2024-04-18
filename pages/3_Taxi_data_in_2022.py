@@ -40,14 +40,6 @@ def make_choropleth(input_df, counties, input_id, input_column, input_color_them
     )
     return choropleth
 
-@st.cache_data
-def format_number(num):
-    if num > 1000000:
-        if not num % 1000000:
-            return f'{num // 1000000} M'
-        return f'{round(num / 1000000, 1)} M'
-    return f'{num // 1000} K'
-
 # *******************************************************************************************************************
 
 # load data
@@ -56,12 +48,6 @@ url = "https://github.com/pcrete/gsvloader-demo/raw/master/geojson/Bangkok-distr
 response = requests.get(url)
 data = response.json()
 states = geopandas.GeoDataFrame.from_features(data, crs="EPSG:4326")
-# st.write(states.head())
-
-# taxi_data = pd.read_csv('D:\\Senior Project\\OD_2022\\Taxi2022_bkk.csv')
-
-# เพิ่มปุ่มให้ผู้ใช้เลือกและอัพโหลดไฟล์
-# uploaded_file = st.file_uploader("Choose a file", type=['txt', 'csv', 'pdf'])
 
 with st.form(key='file_upload_form'):
     # เพิ่มปุ่มให้ผู้ใช้เลือกและอัพโหลดไฟล์
@@ -90,22 +76,6 @@ with st.form(key='file_upload_form'):
                 # แสดงข้อความเมื่อไฟล์ไม่รองรับ
                 st.write("Unsupported file type")
 
-# gauth = GoogleAuth()
-# gauth.LocalWebserverAuth()  # สร้างเซสชันใหม่โดยใช้ local web server
-# drive = GoogleDrive(gauth)
-
-# รหัสไฟล์ของไฟล์ CSV ใน Google Drive
-# file_id = 'รหัสไฟล์ของคุณ'
-
-# ดาวน์โหลดไฟล์ CSV จาก Google Drive
-# downloaded = drive.CreateFile({'id': '1QcV9G1fIkoK6JvA4x8BOx8Iy_QjuJuUD'})
-# downloaded.GetContentFile('Taxi2022_bkk.csv')
-
-# อ่านไฟล์ CSV เข้าสู่ DataFrame
-# https://drive.google.com/file/d/1QcV9G1fIkoK6JvA4x8BOx8Iy_QjuJuUD/view?usp=sharing
-# taxi_data = pd.read_csv('ไฟล์.csv')
-# st.write(taxi_data.head())
-
 # *******************************************************************************************************************
 
             with st.sidebar:
@@ -115,8 +85,6 @@ with st.form(key='file_upload_form'):
                 
                 selected_day = st.selectbox('Select day', day_list, index=len(day_list)-1)
                 df_selected_day = taxi_data[taxi_data['day_of_week'] == selected_day]
-                # st.write("df_selected_day :", df_selected_day.shape)
-                # df_selected_year_sorted = df_selected_year.sort_values(by="population", ascending=False)
 
                 color_theme_list = ['blues', 'cividis', 'greens', 'inferno', 'magma', 'plasma', 'reds', 'rainbow', 'turbo', 'viridis']
                 selected_color_theme = st.selectbox('Select a color theme', color_theme_list)
@@ -138,24 +106,12 @@ with st.form(key='file_upload_form'):
             'dname': states_with_points_sorted['dname'],
             'num_points': states_with_points_sorted['num_points']
             })
-
-            # geo_df = 
+       
             # *******************************************************************************************************************
 
             # กำหนด page layout
 
             col = st.columns((4.5, 2), gap='medium')
-
-            # *******************************************************************************************************************
-
-            # with col[0]:
-            #     st.markdown('#### Monthly Taxi Rides Visualization')
-            #     Monthly_count = df_selected_day.groupby('Month').size()
-            #     fig = px.bar(x=Monthly_count.index, y=Monthly_count.values)
-            #     fig.update_layout(title='Number of Taxi Rides per Month',
-            #                       xaxis_title='Month',
-            #                       yaxis_title='Number of Taxi Rides')
-            #     st.plotly_chart(fig)
 
             # *******************************************************************************************************************
 
@@ -193,21 +149,6 @@ with st.form(key='file_upload_form'):
 
             with col[1]:
                 st.markdown('#### Top districts with the highest number of taxi pickups')
-                
-                # # สร้าง GeoDataFrame จาก DataFrame ที่มีคอลัมน์ lat และ lon
-                # geometry = [Point(lon, lat) for lat, lon in zip(df_selected_day['startlat'], df_selected_day['startlon'])]
-                # df_selected_day_geo = gpd.GeoDataFrame(df_selected_day, geometry=geometry)
-                # # ทำ Spatial Join เพื่อเชื่อมต่อข้อมูลของจุดกับโพลีกอน
-                # joined = gpd.sjoin(df_selected_day_geo, states, how="inner", op="within")
-                # # นับจำนวนจุดในแต่ละโพลีกอนแล้วจัดกลุ่มรายการตามโพลีกอน
-                # num_points_by_state = joined.groupby('OBJECTID').size().rename("num_points")
-                # # เชื่อมต่อผลลัพธ์กับ GeoDataFrame ของโพลีกอน
-                # states_with_points = states.merge(num_points_by_state, on='OBJECTID', how='left')
-                # states_with_points_sorted = states_with_points.sort_values(by="num_points", ascending=False)
-                # df_states_points = pd.DataFrame({
-                # 'dname': states_with_points_sorted['dname'],
-                # 'num_points': states_with_points_sorted['num_points']
-                # })
 
                 # แสดงผลลัพธ์
                 st.dataframe(df_states_points,
@@ -232,8 +173,3 @@ with st.form(key='file_upload_form'):
                 st.markdown('#### Customers spend on trips')
                 st.metric(label="Time (Second)", value="{:,}".format(round(average_time_in_trip)))
                 st.metric(label="Distance (Meter)", value="{:,}".format(round(average_Distance_in_trip)))
-
-
-
-# *******************************************************************************************************************
-
