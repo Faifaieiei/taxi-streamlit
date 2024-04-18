@@ -69,25 +69,10 @@ def plot_nn_distances(distances):
     fig.update_layout(width=600, height=500)
     # แสดงกราฟใน Streamlit
     st.plotly_chart(fig)
-    # fig, ax = plt.subplots()  # สร้างรูปภาพด้วย matplotlib
-    # ax.plot(distances)
-    # ax.set_xlabel('Points')
-    # ax.set_ylabel('Nearest Neighbor Distance')
-    # ax.set_title('Nearest Neighbor Distances')
-    # st.pyplot(fig)  # แสดงรูปภาพใน Streamlit
-
-    # plt.plot(distances)
-    # plt.xlabel('Points')
-    # plt.ylabel('Nearest Neighbor Distance')
-    # plt.title('Nearest Neighbor Distances')
-    # st.pyplot()
-
+    
 # แปลงไฟล์ geopandas -> dataframe
 @st.cache_data
 def geodf_to_str(_geodf):
-    # สร้าง GeoDataFrame ตัวอย่าง
-    # gdf = gpd.read_file(_geodf)
-    # แปลง GeoDataFrame เป็น DataFrame โดยลบคอลัมน์ geometry
     df = pd.DataFrame(_geodf)
     df = df.drop(columns='geometry')
     return df
@@ -98,14 +83,11 @@ top_10_districts = ["เขตจตุจักร","เขตราชเท�
 
 # main.py dir
 path = Path(__file__).parents[1]
-# print(path)
 
 # NOTE rename filename.gz to yours
 gz_path = f"{path}/Thursday2_bkk.gz"
-# print(gz_path)
 
-# โหลด DataFrame ข้อมูล Taxi วันจัน กรุงเทพ
-# taxi_data = pd.read_csv('D:\Senior Project\OD_2022\Tuesday_bkk.csv')
+# โหลด DataFrame ข้อมูล Taxi วันพฤหัส กรุงเทพ
 with gzip.open(gz_path, 'rb') as f:
     # อ่านข้อมูลเข้าสู่ DataFrame ของ pandas
     taxi_data = pd.read_csv(f)
@@ -131,46 +113,32 @@ with tab1:
     with st.form("my form"):
 
         selected = st.selectbox("CHOOSE DISTRICT",top_10_districts)
-        # selected.to_file("selected.shp")
-        # with open("selected.txt", "w") as file:
-        #     # Write text to the file
-        #     file.write("selected")
 
         num_start = st.selectbox("ENTER STARTTIME", list(range(25)), format_func=lambda x: str(x) if x != 0 else "Choose start time")
         num_end = st.selectbox("ENTER ENDTIME", list(range(1, 25)), format_func=lambda x: str(x) if x != 0 else "Choose end time")
-        # num_start = st.sidebar.number_input("ENTER STARTTIME", min_value=0, max_value=24, value=1)
-        # num_end = st.sidebar.number_input("ENTER ENDTIME", min_value=1, max_value=24, value=num_start + 1)
-
+        
         submitted = st.form_submit_button("view results")
         
         if submitted:
             # เลือกช่วงเวลา
             taxi_data['starttime'] = pd.to_datetime(taxi_data['starttime'])
-            # st.write("Shape of taxi_data:", taxi_data.shape)
 
             filtered_mon = taxi_data[(taxi_data['starttime'].dt.hour >= num_start) & (taxi_data['starttime'].dt.hour < num_end)]
-            # st.write("filtered_mon:", filtered_mon.shape)
 
             # นำข้อมูลของเขตที่ผู้ใช้เลือกจาก states มาเก็บไว้ในตัวแปร selected_district
             selected_district = states[states['dname'] == selected]
             selected_district.to_file("selected_district.shp")
-            # st.write("selected_district:", selected_district.shape)
 
             # สร้าง GeoDataFrame จาก DataFrame ที่มีคอลัมน์ lat และ lon
             geometry = [Point(lon, lat) for lat, lon in zip(filtered_mon['startlat'], filtered_mon['startlon'])]
             filtered_mon_geo = gpd.GeoDataFrame(filtered_mon, geometry=geometry)
             filtered_mon_in_selected_district = filtered_mon_geo[filtered_mon_geo['geometry'].within(selected_district.unary_union)]
-            # st.write("filtered_mon_in_selected_district:", filtered_mon_in_selected_district.shape)
-
+            
             taxi_subset = latlon2EN(geodf_to_str(filtered_mon_in_selected_district))
             taxi_subset.to_csv("taxi_subset.csv", encoding="utf-8")
 
             # สร้าง point เพื่อไปหาพารามิเตอร์
-            # st.write("geodf_to_str(filtered_mon_in_selected_district):", geodf_to_str(filtered_mon_in_selected_district).shape)
-
             points = get_point(latlon2EN(geodf_to_str(filtered_mon_in_selected_district)))
-            # st.write(points)
-            # st.write("points:", points.shape)
             np.savetxt('points.txt', points)
 
             col8, col9= st.columns(2, gap='large')
@@ -211,42 +179,6 @@ with tab1:
                 # แสดงแผนที่ folium บน Streamlit
                 folium_static(mm)
 
-
-            # # สร้างแผนที่ folium ด้วยตำแหน่งเริ่มต้น
-            # mm = folium.Map(location=[13.7563, 100.5018], tiles="OpenStreetMap", zoom_start=14)
-
-            # # เพิ่มข้อมูลขอบเขตเขตที่ผู้ใช้เลือกลงในแผนที่
-            # choropleth = folium.Choropleth(
-            #     geo_data=selected_district.to_json(),
-            #     data=selected_district,
-            #     columns=('dname', 'AREA'),
-            #     key_on='feature.properties.dname',
-            #     line_opacity=0.8,
-            #     highlight=True
-            # )
-            # choropleth.geojson.add_to(mm)
-
-            # # สร้าง Marker Cluster เพื่อจัดกลุ่มข้อมูล Marker ไว้ในกรณีที่มีจำนวนมาก
-            # marker_cluster = MarkerCluster().add_to(mm)
-
-            # # เพิ่มจุดของแต่ละเที่ยวรถเช่าลงในแผนที่ folium โดยใช้คอลัมน์ geometry เพื่อระบุตำแหน่ง
-            # for idx, row in filtered_mon_in_selected_district.iterrows():
-            #     folium.CircleMarker(location=[row.geometry.y, row.geometry.x],
-            #                         radius=2,
-            #                         fill=True,
-            #                         color='#FF0000',
-            #                         fill_opacity=0.7, 
-            #                         popup=row['starttime']).add_to(marker_cluster)
-
-            # # หาตำแหน่งขอบเขตของเขตที่ผู้ใช้เลือก
-            # min_lon, min_lat, max_lon, max_lat = selected_district.total_bounds
-
-            # # ซูมแผนที่เข้าไปในพื้นที่ที่สนใจ
-            # mm.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
-
-            # # แสดงแผนที่ folium บน Streamlit
-            # folium_static(mm)
-
             with col9:
                 # สร้างกราฟเพื่อหาค่า eps
                 neighbors = NearestNeighbors(n_neighbors=minpts(points))
@@ -270,16 +202,9 @@ with tab2:
         # กำหนดช่วงของ eps และ minPts
         eps_range = np.arange(range_start, range_end, 1)
 
-        # if 'points' in st.session_state:
-        #     points = st.session_state['points']
-        
-        # st.write(st.session_state['points'])
-
         if submitted:
 
             points = np.loadtxt('points.txt')
-            # st.write(points)
-            # st.write("points:", points.shape)
 
             # เก็บผลลัพธ์ที่ดีที่สุด
             best_eps = None
@@ -308,11 +233,6 @@ with tab2:
                     best_silhouette_score = silhouette_avg
                     best_eps = eps
 
-            # พิมพ์ค่า hyperparameters ที่ดีที่สุด
-            # st.write("Best eps:", best_eps)
-            # st.write("Best minPts:", best_minPts)
-            # st.write("Best silhouette score:", best_silhouette_score)
-
             # input parameter
             db = DBSCAN(eps=best_eps, min_samples=best_minPts).fit(points)
             core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
@@ -338,24 +258,10 @@ with tab2:
             with col5:
                 st.metric(title[4], n_noise_)
 
-            # st.write("N_Cluster:", n_clusters_)
-            # st.write("N_Noise:", n_noise_)
-
-            # st.pyplot(plt.figure(figsize=(10, 8)))
-            # plt.scatter(taxi_data_subset['easting'], taxi_data_subset['northing'], c=taxi_data_subset['dblabels'], cmap='plasma', s=20)
-            # st.pyplot()
-
             filtered_mon_in_selected_district = pd.read_csv('taxi_subset.csv', encoding="utf8")
             filtered_mon_in_selected_district['cluster'] = dblabels
-            # st.write(filtered_mon_in_selected_district)
 
             selected_district = gpd.read_file("selected_district.shp", encoding="utf-8")
-            # st.write(selected_district)
-
-            # with open("selected.txt", "r") as file:
-            #     # Read the entire content of the file
-            #     selected = file.read()
-            # selected_district = states[states['dname'] == selected]
 
             col6, col7 = st.columns(2)
             
