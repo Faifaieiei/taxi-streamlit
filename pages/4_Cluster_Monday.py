@@ -309,11 +309,10 @@ with tab2:
             with col7:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()
                 dblabels_count.columns = ['cluster', 'count']
-
                 merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
 
-                # สร้างกราฟแท่ง
                 fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
+                fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
                 fig.update_traces(marker_color=merged_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
