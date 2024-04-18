@@ -363,7 +363,8 @@ with tab2:
             with col6:
 
                 # สร้าง folium Map
-                colors = ['#' + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in range(n_clusters_)] # range = n_clusters_
+                colors = ['#' + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in range(n_clusters_+1)] # range = n_clusters_
+                # print(colors)
 
                 map_center = [filtered_mon_in_selected_district['startlat'].mean(), filtered_mon_in_selected_district['startlon'].mean()]
                 my_map = folium.Map(location=map_center, zoom_start=12)
@@ -380,14 +381,17 @@ with tab2:
                 choropleth.geojson.add_child(
                     folium.features.GeoJsonTooltip(['dname_e'], labels=False)  # แก้เป็นชื่อคอลัมน์ที่ถูกต้อง
                 )
-
+                
+                filtered_mon_in_selected_district['cluster_color'] = filtered_mon_in_selected_district['cluster'].apply(lambda x: colors[int(x)])
+                filtered_mon_in_selected_district_sorted = filtered_mon_in_selected_district.sort_values(by='cluster')
+                unique_colors = filtered_mon_in_selected_district[['cluster', 'cluster_color']].drop_duplicates()
+                
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
                     cluster = row['cluster']  # ใช้ค่า cluster จาก DataFrame
-                    folium.CircleMarker(location=point, radius=3, color=colors[int(cluster)], fill=True, fill_color=colors[int(cluster)]).add_to(my_map)
-                    # label = labels[index]  # ใช้ index เพื่อรับค่า label ที่เกี่ยวข้องกับแถวนั้น
-                    # folium.CircleMarker(location=point, radius=3, color=colors[int(row["cluster"])], fill=True, fill_color=colors[int(row["cluster"])]).add_to(my_map)
-            
+                    popup_text = f"Cluster: {cluster}"
+                    folium.CircleMarker(location=point, radius=3, color=colors[int(cluster)], fill=True, fill_color=colors[int(cluster)], popup=popup_text).add_to(my_map)
+                    
                 # หาตำแหน่งขอบเขตของเขตที่ผู้ใช้เลือก
                 min_lon, min_lat, max_lon, max_lat = selected_district.total_bounds
 
@@ -395,12 +399,15 @@ with tab2:
                 my_map.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
                 st_map = st_folium(my_map, width=700, height=450)
-
+                
             with col7:
-                dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts()       
-                fig = px.bar(x=dblabels_count.index, y=dblabels_count.values)
+                dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()
+                dblabels_count.columns = ['cluster', 'count']
+                merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
+
+                fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color=colors)
+                fig.update_traces(marker_color=merged_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
