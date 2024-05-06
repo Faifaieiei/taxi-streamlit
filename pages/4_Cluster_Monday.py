@@ -314,9 +314,9 @@ with tab2:
                 merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
                 filtered_df = merged_df[merged_df['cluster'] != -1]
 
-                fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
+                fig = px.bar(x=filtered_df['cluster'], y=filtered_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color=merged_df['cluster_color'])
+                fig.update_traces(marker_color=filtered_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
