@@ -315,7 +315,7 @@ with tab2:
                 # สร้างกราฟจากข้อมูลที่กรองแล้ว
                 fig = px.bar(x=filtered_df['cluster'], y=filtered_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color=merged_df['cluster_color'])
+                fig.update_traces(marker_color=filtered_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
