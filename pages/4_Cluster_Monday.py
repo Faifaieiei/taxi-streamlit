@@ -295,6 +295,8 @@ with tab2:
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
                     cluster = row['cluster']  # ใช้ค่า cluster จาก DataFrame
+                    if cluster == -1:
+                        continue
                     popup_text = f"Cluster: {cluster}"
                     folium.CircleMarker(location=point, radius=3, color=colors[int(cluster)], fill=True, fill_color=colors[int(cluster)], popup=popup_text).add_to(my_map)
                     
@@ -310,6 +312,7 @@ with tab2:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()
                 dblabels_count.columns = ['cluster', 'count']
                 merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
+                filtered_df = merged_df[merged_df['cluster'] != -1]
 
                 fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
