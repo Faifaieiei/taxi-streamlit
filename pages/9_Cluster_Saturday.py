@@ -296,6 +296,8 @@ with tab2:
                 for index, row in filtered_mon_in_selected_district.iterrows():
                     point = [row['startlat'], row['startlon']]
                     cluster = row['cluster']  # ใช้ค่า cluster จาก DataFrame
+                    if cluster == -1:
+                        continue
                     popup_text = f"Cluster: {cluster}"
                     folium.CircleMarker(location=point, radius=3, color=colors[int(cluster)], fill=True, fill_color=colors[int(cluster)], popup=popup_text).add_to(my_map)
                     
@@ -311,10 +313,13 @@ with tab2:
                 dblabels_count = filtered_mon_in_selected_district['cluster'].value_counts().reset_index()
                 dblabels_count.columns = ['cluster', 'count']
                 merged_df = pd.merge(dblabels_count, unique_colors, on='cluster')
-
-                fig = px.bar(x=merged_df['cluster'], y=merged_df['count'])
+                
+                filtered_df = merged_df[merged_df['cluster'] != -1]
+                
+                # สร้างกราฟจากข้อมูลที่กรองแล้ว
+                fig = px.bar(x=filtered_df['cluster'], y=filtered_df['count'])
                 fig.update_layout(xaxis_title='Cluster', yaxis_title='Number of Taxi')
-                fig.update_traces(marker_color=merged_df['cluster_color'])
+                fig.update_traces(marker_color=filtered_df['cluster_color'])
                 fig.update_layout(width=600, height=500)
                 fig.update_layout(xaxis=dict(tickmode='linear', dtick=1)) 
                 st.plotly_chart(fig)
